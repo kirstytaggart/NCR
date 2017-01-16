@@ -1,0 +1,1 @@
+from ncr import *
