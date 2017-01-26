@@ -92,9 +92,12 @@ class NCR(object):
         # get the data array from fitsfile
         try:
             self.imagearray = pyfits.getdata(fitsfile,ext)
+            self.headerarray = pyfits.getheader(fitsfile,ext)
+            
         except (IOError,IndexError):
             raise Exception("cannot get data from {0} (extension {1})"
                                  .format(fitsfile,ext))
+
         self.xsize,self.ysize = self.imagearray.shape[::-1]
         self.basename = os.path.splitext(fitsfile)[0]
 
@@ -126,10 +129,11 @@ class NCR(object):
         if ds9:
             # overwrite section,starcentres and masksize using values from
             # ds9 interaction
-            import ds9 as pyds9
+            import pyds9 as pyds9
             self.d = pyds9.ds9(wait=12,start=True)
             section,starcentres,masksize = self._use_ds9(fitsfile,ext,snloc,
                                                          masksize)
+            
         if section == None:
             # default to size of image in that case
             x1,y1,x2,y2 = 0,0,self.xsize,self.ysize
@@ -379,7 +383,7 @@ class NCR(object):
         print "\nNCR value:          %.4f" % self.snncr
 
         # write some history cards to fits header if we used a fits file
-        self.writehistory()
+        #self.writehistory()
 
         # revert stdout to normal
         sys.stdout = oldstdout
@@ -518,7 +522,7 @@ class NCR(object):
         print " 'q' - finish and continue to NCR calculation\n"
         while True:
             try:
-                key,coox,cooy = self.d.get("imexam key coordinate").split()
+                key,coox,cooy = self.d.get("imexam key coordinate image").split()
             except AttributeError:
                 print "Problem contacting ds9 (closed?)"
                 sys.exit()
