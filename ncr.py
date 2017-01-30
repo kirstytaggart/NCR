@@ -120,6 +120,7 @@ class NCR(object):
             # need to ensure we're still on zero-indexing! 
             # cootoxy returns 1-index
             snloc[0],snloc[1] = snx-1,sny-1
+
         elif len(snloc[0].split(":")) != 1 and len(snloc[1].split(":")) != 1:
             raise Exception("SN coordinates must be pixel values (x,y) or RA"\
                             " and DEC in the form hh:mm:ss,dd:mm:ss")
@@ -496,11 +497,13 @@ class NCR(object):
             self.d.set("file {0}".format(fitsfile))
             self.d.set("scale mode 99.5")
             #Centre on the SN
-            self.d.set("pan to {0} {1} image".format(snloc[0],snloc[1]))
+            #self.d.set("pan to {0} {1} image".format(snloc[0],snloc[1]))
+            self.d.set("pan to {0} {1} image".format(snloc[0]+1,snloc[1]+1)) #RMB (ds9 not zero indexed)
             #north up, east left
             self.d.set("align yes")
             #Mark the SN location
-            self.d.set('regions', 'image; circle({0},{1},2) # width=2 color=red select=0'.format(snloc[0],snloc[1]))
+            #self.d.set('regions', 'image; circle({0},{1},2) # width=2 color=red select=0'.format(snloc[0],snloc[1]))	#RMB (ds9 not zero indexed)
+            self.d.set('regions', 'image; circle({0},{1},2) # width=2 color=red select=0'.format(snloc[0]+1,snloc[1]+1))
 
         initialsetup()
 
